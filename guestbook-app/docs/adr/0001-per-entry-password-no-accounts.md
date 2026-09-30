@@ -1,0 +1,3 @@
+# No accounts: a per-entry password is the only authority
+
+The guestbook has no sign-up or login. Instead, each entry carries its own password, chosen when it is written, and that password is the sole check for editing or deleting that entry. Author names are plain labels and grant nothing, so duplicates are allowed. We chose this over accounts to keep writing an entry frictionless and the scope small, accepting that a forgotten password means the entry can no longer be changed and that there is no admin override or brute-force protection. Adding accounts later would mean reworking how ownership is stored, so don't bolt on login without revisiting this decision.
