@@ -4,16 +4,16 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `package.json`의 `name`이 `guestbook-app`이다
-- [ ] 기본 create-next-app 화면과 쓰이지 않는 기본 에셋이 제거되었다
-- [ ] 헤더에 "미니 방명록"과 `개발자: 김정효 (202204195)`가 항상 표시된다
-- [ ] 글이 없을 때 빈 목록 안내 문구가 표시된다
-- [ ] 페이지는 방명록 모듈의 `listEntries()`로 목록을 그린다 (이 단계에서는 빈 목록)
-- [ ] 방명록 모듈이 저장소 인터페이스를 주입받는 구조이며, 메모리 저장소 구현이 있다
-- [ ] 공개 Entry 타입에 비밀번호·해시 필드가 없다
-- [ ] Vitest가 설치되어 있고 `npm test`로 실행된다
-- [ ] "빈 방명록이면 `listEntries()`가 빈 목록을 돌려준다" 테스트가 통과한다
-- [ ] 코드 작성 전에 `node_modules/next/dist/docs/`의 관련 가이드를 확인했다 (AGENTS.md)
-- [ ] `npm run build`와 `npm run lint`가 통과한다
+- [x] `package.json`의 `name`이 `guestbook-app`이다
+- [x] 기본 create-next-app 화면과 쓰이지 않는 기본 에셋이 제거되었다
+- [x] 헤더에 "미니 방명록"과 `개발자: 김정효 (202204195)`가 항상 표시된다
+- [x] 글이 없을 때 빈 목록 안내 문구가 표시된다
+- [x] 페이지는 방명록 모듈의 `listEntries()`로 목록을 그린다 (이 단계에서는 빈 목록)
+- [x] 방명록 모듈이 저장소 인터페이스를 주입받는 구조이며, 메모리 저장소 구현이 있다
+- [x] 공개 Entry 타입에 비밀번호·해시 필드가 없다
+- [x] Vitest가 설치되어 있고 `npm test`로 실행된다
+- [x] "빈 방명록이면 `listEntries()`가 빈 목록을 돌려준다" 테스트가 통과한다
+- [x] 코드 작성 전에 `node_modules/next/dist/docs/`의 관련 가이드를 확인했다 (AGENTS.md)
+- [x] `npm run build`와 `npm run lint`가 통과한다
