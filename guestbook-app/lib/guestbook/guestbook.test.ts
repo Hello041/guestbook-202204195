@@ -194,6 +194,18 @@ describe("editEntry", () => {
     expect(result).toEqual({ ok: false, reason: "not-found" });
   });
 
+  it("reports a missing entry even when the new message is invalid", async () => {
+    const guestbook = newGuestbook();
+
+    const result = await guestbook.editEntry({
+      id: "00000000-0000-0000-0000-000000000000",
+      message: "   ",
+      password: "1234",
+    });
+
+    expect(result).toEqual({ ok: false, reason: "not-found" });
+  });
+
   it.each([
     ["an empty message", ""],
     ["a blank message", "   "],

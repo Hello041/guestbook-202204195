@@ -2,7 +2,6 @@
 
 import { useActionState, useState } from "react";
 import { formatCreatedTime } from "@/lib/format-created-time";
-import { MESSAGE_MAX, PASSWORD_MAX } from "@/lib/guestbook/entry-rules";
 import type { Entry } from "@/lib/guestbook/guestbook";
 import {
   deleteEntryAction,
@@ -80,7 +79,6 @@ function EditForm({ entry, onClose }: { entry: Entry; onClose: () => void }) {
         <textarea
           name="message"
           defaultValue={state.message ?? entry.message}
-          maxLength={MESSAGE_MAX}
           required
           rows={3}
           className={`${inputClass} resize-y`}
@@ -138,7 +136,6 @@ function PasswordField() {
       <input
         name="password"
         type="password"
-        maxLength={PASSWORD_MAX}
         required
         autoComplete="current-password"
         className={inputClass}

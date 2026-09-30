@@ -79,13 +79,14 @@ export function createGuestbook(store: EntryStore) {
     },
 
     async editEntry(input: EditEntryInput): Promise<EditEntryResult> {
+      const existing = await store.findById(input.id);
+      if (!existing) return { ok: false, reason: "not-found" };
+
       const message = checkMessage(input.message);
       if ("error" in message) {
         return { ok: false, reason: "invalid", errors: { message: message.error } };
       }
 
-      const existing = await store.findById(input.id);
-      if (!existing) return { ok: false, reason: "not-found" };
       if (!(await verifyPassword(input.password, existing.passwordHash))) {
         return { ok: false, reason: "wrong-password" };
       }

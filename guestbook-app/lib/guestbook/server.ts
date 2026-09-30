@@ -1,3 +1,5 @@
+import "server-only";
+
 import { createGuestbook } from "./guestbook";
 import { createNeonEntryStore } from "./neon-entry-store";
 

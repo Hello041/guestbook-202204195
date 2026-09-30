@@ -2,12 +2,6 @@
 
 import { useActionState } from "react";
 import { createEntryAction, type CreateEntryFormState } from "./actions";
-import {
-  AUTHOR_NAME_MAX,
-  MESSAGE_MAX,
-  PASSWORD_MAX,
-  PASSWORD_MIN,
-} from "@/lib/guestbook/entry-rules";
 
 export const inputClass =
   "w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/30 dark:border-slate-700 dark:bg-slate-900";
@@ -31,7 +25,6 @@ export function CreateEntryForm() {
           <input
             name="authorName"
             defaultValue={state.values?.authorName}
-            maxLength={AUTHOR_NAME_MAX}
             required
             className={inputClass}
           />
@@ -42,8 +35,6 @@ export function CreateEntryForm() {
           <input
             name="password"
             type="password"
-            minLength={PASSWORD_MIN}
-            maxLength={PASSWORD_MAX}
             required
             autoComplete="new-password"
             className={inputClass}
@@ -57,7 +48,6 @@ export function CreateEntryForm() {
         <textarea
           name="message"
           defaultValue={state.values?.message}
-          maxLength={MESSAGE_MAX}
           required
           rows={3}
           className={`${inputClass} resize-y`}

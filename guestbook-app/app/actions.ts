@@ -50,6 +50,8 @@ export async function editEntryAction(
   const result = await guestbook.editEntry({ id, message, password });
   if (!result.ok) {
     if (result.reason === "invalid") return { errors: result.errors, message };
+    // A missing entry is still on the reader's screen; refresh the list.
+    if (result.reason === "not-found") revalidatePath("/");
     return {
       error: result.reason === "wrong-password" ? WRONG_PASSWORD : NOT_FOUND,
       message,
@@ -69,6 +71,7 @@ export async function deleteEntryAction(
 
   const result = await guestbook.deleteEntry({ id, password });
   if (!result.ok) {
+    if (result.reason === "not-found") revalidatePath("/");
     return {
       error: result.reason === "wrong-password" ? WRONG_PASSWORD : NOT_FOUND,
     };
