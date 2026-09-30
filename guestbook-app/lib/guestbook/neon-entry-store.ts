@@ -50,6 +50,12 @@ export function createNeonEntryStore(databaseUrl: string): EntryStore {
       `) as EntryRow[];
       return row ? fromRow(row) : null;
     },
+
+    async remove(id) {
+      if (!UUID.test(id)) return false;
+      const rows = await sql`DELETE FROM entries WHERE id = ${id} RETURNING id`;
+      return rows.length > 0;
+    },
   };
 }
 

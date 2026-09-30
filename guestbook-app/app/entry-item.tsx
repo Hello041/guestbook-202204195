@@ -4,10 +4,14 @@ import { useActionState, useState } from "react";
 import { formatCreatedTime } from "@/lib/format-created-time";
 import { MESSAGE_MAX, PASSWORD_MAX } from "@/lib/guestbook/entry-rules";
 import type { Entry } from "@/lib/guestbook/guestbook";
-import { editEntryAction, type EntryFormState } from "./actions";
+import {
+  deleteEntryAction,
+  editEntryAction,
+  type EntryFormState,
+} from "./actions";
 import { FieldError, inputClass } from "./create-entry-form";
 
-type Mode = "view" | "edit";
+type Mode = "view" | "edit" | "delete";
 
 export function EntryItem({ entry }: { entry: Entry }) {
   const [mode, setMode] = useState<Mode>("view");
@@ -35,11 +39,22 @@ export function EntryItem({ entry }: { entry: Entry }) {
           >
             수정
           </button>
+          <button
+            type="button"
+            onClick={() => setMode("delete")}
+            className={secondaryButtonClass}
+          >
+            삭제
+          </button>
         </div>
       )}
 
       {mode === "edit" && (
         <EditForm entry={entry} onClose={() => setMode("view")} />
+      )}
+
+      {mode === "delete" && (
+        <DeleteForm entry={entry} onClose={() => setMode("view")} />
       )}
     </li>
   );
@@ -86,6 +101,36 @@ function EditForm({ entry, onClose }: { entry: Entry; onClose: () => void }) {
   );
 }
 
+function DeleteForm({ entry, onClose }: { entry: Entry; onClose: () => void }) {
+  const [state, formAction, pending] = useActionState<EntryFormState, FormData>(
+    async (prev, formData) => {
+      const next = await deleteEntryAction(entry.id, prev, formData);
+      if (next.ok) onClose();
+      return next;
+    },
+    {},
+  );
+
+  return (
+    <form
+      action={formAction}
+      className="mt-3 flex flex-col gap-2 border-t border-slate-200 pt-3 dark:border-slate-800"
+    >
+      <p className="text-sm">이 글을 삭제하려면 비밀번호를 입력하세요.</p>
+      <PasswordField />
+      <FieldError message={state.error} />
+      <div className="flex justify-end gap-2">
+        <button type="button" onClick={onClose} className={secondaryButtonClass}>
+          취소
+        </button>
+        <button type="submit" disabled={pending} className={dangerButtonClass}>
+          {pending ? "삭제 중..." : "삭제"}
+        </button>
+      </div>
+    </form>
+  );
+}
+
 function PasswordField() {
   return (
     <label className="flex flex-col gap-1 text-sm">
@@ -106,3 +151,5 @@ const secondaryButtonClass =
   "rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800";
 const primaryButtonClass =
   "rounded-md bg-sky-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-50";
+const dangerButtonClass =
+  "rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50";

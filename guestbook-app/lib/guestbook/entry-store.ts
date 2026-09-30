@@ -22,4 +22,6 @@ export interface EntryStore {
   findById(id: string): Promise<StoredEntry | null>;
   // Sets the message and marks the entry as edited now. Null if it is gone.
   updateMessage(id: string, message: string): Promise<StoredEntry | null>;
+  // True if an entry was removed.
+  remove(id: string): Promise<boolean>;
 }

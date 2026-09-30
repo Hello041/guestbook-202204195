@@ -39,5 +39,12 @@ export function createMemoryEntryStore(): EntryStore {
       entry.updatedAt = new Date();
       return { ...entry };
     },
+
+    async remove(id) {
+      const index = entries.findIndex((e) => e.id === id);
+      if (index === -1) return false;
+      entries.splice(index, 1);
+      return true;
+    },
   };
 }

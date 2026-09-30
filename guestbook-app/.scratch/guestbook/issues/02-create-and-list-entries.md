@@ -4,7 +4,7 @@
 
 **Blocked by:** 01 (방명록 뼈대)
 
-**Status:** in-progress (브라우저 폼 제출 수동 확인 남음)
+**Status:** done
 
 - [x] `entries` 스키마(id UUID, author_name, message, password_hash, created_at, updated_at, created_at 인덱스)가 저장소에 SQL로 보관되어 있고, Neon에 적용하는 방법이 문서화되어 있다
 - [x] Neon 저장소 구현이 `DATABASE_URL`을 사용한다
@@ -18,5 +18,5 @@
 - [x] 메시지 줄바꿈이 유지되고, HTML은 실행되지 않고 텍스트로 보인다
 - [x] 같은 작성자 이름으로 여러 글을 쓸 수 있다
 - [x] 모듈 테스트(메모리 저장소): 작성 후 목록 반영, 최신순 정렬, 비밀번호 비노출, 각 필드 빈 값·공백만·경계값(20/21자, 500/501자, 3/4/20/21자) 거부
-- [ ] 로컬(`next dev`)에서 작성 → 새로고침 후에도 유지됨을 수동 확인했다
+- [x] 로컬(`next dev`)에서 작성 → 새로고침 후에도 유지됨을 수동 확인했다
 - [x] `npm test`, `npm run build`, `npm run lint`가 통과한다

@@ -230,6 +230,67 @@ describe("editEntry", () => {
   });
 });
 
+describe("deleteEntry", () => {
+  it("removes the entry with the right password", async () => {
+    const guestbook = newGuestbook();
+    const gone = await createOk(guestbook, validInput({ message: "지울 글" }));
+    await createOk(guestbook, validInput({ message: "남을 글" }));
+
+    const result = await guestbook.deleteEntry({
+      id: gone.id,
+      password: "1234",
+    });
+
+    expect(result).toEqual({ ok: true });
+    const messages = (await guestbook.listEntries()).map((e) => e.message);
+    expect(messages).toEqual(["남을 글"]);
+  });
+
+  it("refuses a wrong password and keeps the entry", async () => {
+    const guestbook = newGuestbook();
+    const entry = await createOk(guestbook, validInput({ password: "1234" }));
+
+    const result = await guestbook.deleteEntry({
+      id: entry.id,
+      password: "9999",
+    });
+
+    expect(result).toEqual({ ok: false, reason: "wrong-password" });
+    expect(await guestbook.listEntries()).toHaveLength(1);
+  });
+
+  it("does not let another entry's password delete an entry with the same author name", async () => {
+    const guestbook = newGuestbook();
+    const mine = await createOk(
+      guestbook,
+      validInput({ authorName: "김철수", password: "mine-pw" }),
+    );
+    await createOk(
+      guestbook,
+      validInput({ authorName: "김철수", password: "other-pw" }),
+    );
+
+    const result = await guestbook.deleteEntry({
+      id: mine.id,
+      password: "other-pw",
+    });
+
+    expect(result).toEqual({ ok: false, reason: "wrong-password" });
+    expect(await guestbook.listEntries()).toHaveLength(2);
+  });
+
+  it("reports an entry that does not exist", async () => {
+    const guestbook = newGuestbook();
+
+    const result = await guestbook.deleteEntry({
+      id: "00000000-0000-0000-0000-000000000000",
+      password: "1234",
+    });
+
+    expect(result).toEqual({ ok: false, reason: "not-found" });
+  });
+});
+
 async function createOk(guestbook: Guestbook, input: NewEntryInput) {
   const result = await guestbook.createEntry(input);
   if (!result.ok) throw new Error("expected createEntry to succeed");

@@ -37,7 +37,16 @@ export type EditEntryResult =
   | { ok: false; reason: "wrong-password" | "not-found" }
   | { ok: false; reason: "invalid"; errors: FieldErrors };
 
-export type Guestbook =ReturnType<typeof createGuestbook>;
+export type DeleteEntryInput = {
+  id: string;
+  password: string;
+};
+
+export type DeleteEntryResult =
+  | { ok: true }
+  | { ok: false; reason: "wrong-password" | "not-found" };
+
+export type Guestbook = ReturnType<typeof createGuestbook>;
 
 export function createGuestbook(store: EntryStore) {
   return {
@@ -84,6 +93,19 @@ export function createGuestbook(store: EntryStore) {
       const updated = await store.updateMessage(input.id, message.value);
       if (!updated) return { ok: false, reason: "not-found" };
       return { ok: true, entry: toEntry(updated) };
+    },
+
+    async deleteEntry(input: DeleteEntryInput): Promise<DeleteEntryResult> {
+      const existing = await store.findById(input.id);
+      if (!existing) return { ok: false, reason: "not-found" };
+      if (!(await verifyPassword(input.password, existing.passwordHash))) {
+        return { ok: false, reason: "wrong-password" };
+      }
+
+      if (!(await store.remove(input.id))) {
+        return { ok: false, reason: "not-found" };
+      }
+      return { ok: true };
     },
   };
 }

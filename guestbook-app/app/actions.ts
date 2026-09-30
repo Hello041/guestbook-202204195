@@ -59,3 +59,21 @@ export async function editEntryAction(
   revalidatePath("/");
   return { ok: true };
 }
+
+export async function deleteEntryAction(
+  id: string,
+  _prev: EntryFormState,
+  formData: FormData,
+): Promise<EntryFormState> {
+  const password = String(formData.get("password") ?? "");
+
+  const result = await guestbook.deleteEntry({ id, password });
+  if (!result.ok) {
+    return {
+      error: result.reason === "wrong-password" ? WRONG_PASSWORD : NOT_FOUND,
+    };
+  }
+
+  revalidatePath("/");
+  return { ok: true };
+}
