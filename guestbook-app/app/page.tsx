@@ -18,8 +18,6 @@ export default async function Home() {
       </header>
 
       <main className="flex flex-col gap-6">
-        <CreateEntryForm />
-
         {entries.length === 0 ? (
           <p className="rounded-lg border border-dashed border-slate-300 px-4 py-10 text-center text-slate-500 dark:border-slate-700 dark:text-slate-400">
             아직 작성된 글이 없습니다. 첫 글을 남겨보세요!
@@ -31,6 +29,8 @@ export default async function Home() {
             ))}
           </ul>
         )}
+
+        <CreateEntryForm />
       </main>
     </div>
   );
