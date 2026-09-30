@@ -6,6 +6,7 @@
 
 **Status:** ready-for-human
 
+- [ ] 이름 규칙: GitHub 저장소, Vercel 프로젝트, Neon 프로젝트 이름이 모두 `guestbook-202204195`이다 (현재 GitHub 저장소 `Hello041/Guestbook`은 이름 변경 후 로컬 `git remote` URL도 갱신)
 - [ ] GitHub 저장소가 Vercel 프로젝트에 연결되어 있다 (저장소 루트가 아닌 앱 폴더를 Root Directory로 지정)
 - [ ] Vercel 프로젝트 환경변수에 `DATABASE_URL`이 등록되어 있다
 - [ ] 운영 Neon DB에 `entries` 스키마가 적용되어 있다

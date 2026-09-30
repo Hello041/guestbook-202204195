@@ -10,6 +10,13 @@ export type StoredEntry = {
   updatedAt: Date | null;
 };
 
+export type NewStoredEntry = Pick<
+  StoredEntry,
+  "authorName" | "message" | "passwordHash"
+>;
+
 export interface EntryStore {
   findAll(): Promise<StoredEntry[]>;
+  // The store assigns the id and the created time.
+  insert(entry: NewStoredEntry): Promise<StoredEntry>;
 }

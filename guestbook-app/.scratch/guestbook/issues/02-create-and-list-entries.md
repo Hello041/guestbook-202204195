@@ -4,19 +4,19 @@
 
 **Blocked by:** 01 (방명록 뼈대)
 
-**Status:** ready-for-agent
+**Status:** in-progress (브라우저 폼 제출 수동 확인 남음)
 
-- [ ] `entries` 스키마(id UUID, author_name, message, password_hash, created_at, updated_at, created_at 인덱스)가 저장소에 SQL로 보관되어 있고, Neon에 적용하는 방법이 문서화되어 있다
-- [ ] Neon 저장소 구현이 `DATABASE_URL`을 사용한다
-- [ ] `createEntry`가 앞뒤 공백 제거 후 이름 1~20자, 메시지 1~500자를 검사하고, 비밀번호는 공백 제거 없이 4~20자를 검사한다. 위반 시 필드별 사유가 담긴 입력 오류 결과를 돌려준다
-- [ ] 비밀번호는 `node:crypto` scrypt + 글마다 랜덤 salt로 해시되어 저장되며, 평문은 어디에도 남지 않는다
-- [ ] `listEntries`는 작성 시각 내림차순이며 결과에 비밀번호·해시가 없다
-- [ ] 작성 폼은 Server Action으로 제출되고, 비밀번호 입력칸은 가려져 있으며, 제출 중 버튼이 비활성화된다
-- [ ] 입력 오류 시 사유가 폼에 안내되고 입력한 내용이 유지된다
-- [ ] 성공 시 폼이 비워지고 새 글이 목록 맨 위에 나타난다
-- [ ] 작성 시각은 Asia/Seoul 기준 `YYYY-MM-DD HH:mm`으로 표시된다
-- [ ] 메시지 줄바꿈이 유지되고, HTML은 실행되지 않고 텍스트로 보인다
-- [ ] 같은 작성자 이름으로 여러 글을 쓸 수 있다
-- [ ] 모듈 테스트(메모리 저장소): 작성 후 목록 반영, 최신순 정렬, 비밀번호 비노출, 각 필드 빈 값·공백만·경계값(20/21자, 500/501자, 3/4/20/21자) 거부
+- [x] `entries` 스키마(id UUID, author_name, message, password_hash, created_at, updated_at, created_at 인덱스)가 저장소에 SQL로 보관되어 있고, Neon에 적용하는 방법이 문서화되어 있다
+- [x] Neon 저장소 구현이 `DATABASE_URL`을 사용한다
+- [x] `createEntry`가 앞뒤 공백 제거 후 이름 1~20자, 메시지 1~500자를 검사하고, 비밀번호는 공백 제거 없이 4~20자를 검사한다. 위반 시 필드별 사유가 담긴 입력 오류 결과를 돌려준다
+- [x] 비밀번호는 `node:crypto` scrypt + 글마다 랜덤 salt로 해시되어 저장되며, 평문은 어디에도 남지 않는다
+- [x] `listEntries`는 작성 시각 내림차순이며 결과에 비밀번호·해시가 없다
+- [x] 작성 폼은 Server Action으로 제출되고, 비밀번호 입력칸은 가려져 있으며, 제출 중 버튼이 비활성화된다
+- [x] 입력 오류 시 사유가 폼에 안내되고 입력한 내용이 유지된다
+- [x] 성공 시 폼이 비워지고 새 글이 목록 맨 위에 나타난다
+- [x] 작성 시각은 Asia/Seoul 기준 `YYYY-MM-DD HH:mm`으로 표시된다
+- [x] 메시지 줄바꿈이 유지되고, HTML은 실행되지 않고 텍스트로 보인다
+- [x] 같은 작성자 이름으로 여러 글을 쓸 수 있다
+- [x] 모듈 테스트(메모리 저장소): 작성 후 목록 반영, 최신순 정렬, 비밀번호 비노출, 각 필드 빈 값·공백만·경계값(20/21자, 500/501자, 3/4/20/21자) 거부
 - [ ] 로컬(`next dev`)에서 작성 → 새로고침 후에도 유지됨을 수동 확인했다
-- [ ] `npm test`, `npm run build`, `npm run lint`가 통과한다
+- [x] `npm test`, `npm run build`, `npm run lint`가 통과한다
