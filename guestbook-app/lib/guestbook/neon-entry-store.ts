@@ -10,6 +10,9 @@ type EntryRow = {
   updated_at: string | Date | null;
 };
 
+// Anything else would make Postgres throw instead of simply matching nothing.
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export function createNeonEntryStore(databaseUrl: string): EntryStore {
   const sql = neon(databaseUrl);
 
@@ -28,6 +31,24 @@ export function createNeonEntryStore(databaseUrl: string): EntryStore {
         RETURNING *
       `) as EntryRow[];
       return fromRow(row);
+    },
+
+    async findById(id) {
+      if (!UUID.test(id)) return null;
+      const [row] = (await sql`
+        SELECT * FROM entries WHERE id = ${id}
+      `) as EntryRow[];
+      return row ? fromRow(row) : null;
+    },
+
+    async updateMessage(id, message) {
+      if (!UUID.test(id)) return null;
+      const [row] = (await sql`
+        UPDATE entries SET message = ${message}, updated_at = now()
+        WHERE id = ${id}
+        RETURNING *
+      `) as EntryRow[];
+      return row ? fromRow(row) : null;
     },
   };
 }

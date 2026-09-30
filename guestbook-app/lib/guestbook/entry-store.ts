@@ -19,4 +19,7 @@ export interface EntryStore {
   findAll(): Promise<StoredEntry[]>;
   // The store assigns the id and the created time.
   insert(entry: NewStoredEntry): Promise<StoredEntry>;
+  findById(id: string): Promise<StoredEntry | null>;
+  // Sets the message and marks the entry as edited now. Null if it is gone.
+  updateMessage(id: string, message: string): Promise<StoredEntry | null>;
 }

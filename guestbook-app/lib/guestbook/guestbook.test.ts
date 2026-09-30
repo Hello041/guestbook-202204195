@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { createGuestbook, type NewEntryInput } from "./guestbook";
+import {
+  createGuestbook,
+  type Guestbook,
+  type NewEntryInput,
+} from "./guestbook";
 import { createMemoryEntryStore } from "./memory-entry-store";
 
 function newGuestbook() {
@@ -119,6 +123,118 @@ describe("createEntry input rules", () => {
     expect(await guestbook.listEntries()).toHaveLength(2);
   });
 });
+
+describe("editEntry", () => {
+  it("changes the message with the right password, keeping time and order", async () => {
+    const guestbook = newGuestbook();
+    const older = await createOk(guestbook, validInput({ message: "옛 글" }));
+    await createOk(guestbook, validInput({ message: "새 글" }));
+
+    const result = await guestbook.editEntry({
+      id: older.id,
+      message: "고친 글",
+      password: "1234",
+    });
+
+    expect(result.ok).toBe(true);
+    const entries = await guestbook.listEntries();
+    expect(entries.map((e) => e.message)).toEqual(["새 글", "고친 글"]);
+    expect(entries[1]).toMatchObject({
+      id: older.id,
+      authorName: older.authorName,
+      createdAt: older.createdAt,
+      edited: true,
+    });
+  });
+
+  it("refuses a wrong password and leaves the entry unchanged", async () => {
+    const guestbook = newGuestbook();
+    const entry = await createOk(guestbook, validInput({ password: "1234" }));
+
+    const result = await guestbook.editEntry({
+      id: entry.id,
+      message: "몰래 고친 글",
+      password: "9999",
+    });
+
+    expect(result).toEqual({ ok: false, reason: "wrong-password" });
+    const [listed] = await guestbook.listEntries();
+    expect(listed).toMatchObject({ message: entry.message, edited: false });
+  });
+
+  it("does not let another entry's password edit an entry with the same author name", async () => {
+    const guestbook = newGuestbook();
+    const mine = await createOk(
+      guestbook,
+      validInput({ authorName: "김철수", password: "mine-pw" }),
+    );
+    await createOk(
+      guestbook,
+      validInput({ authorName: "김철수", password: "other-pw" }),
+    );
+
+    const result = await guestbook.editEntry({
+      id: mine.id,
+      message: "남이 고친 글",
+      password: "other-pw",
+    });
+
+    expect(result).toEqual({ ok: false, reason: "wrong-password" });
+  });
+
+  it("reports an entry that does not exist", async () => {
+    const guestbook = newGuestbook();
+
+    const result = await guestbook.editEntry({
+      id: "00000000-0000-0000-0000-000000000000",
+      message: "고친 글",
+      password: "1234",
+    });
+
+    expect(result).toEqual({ ok: false, reason: "not-found" });
+  });
+
+  it.each([
+    ["an empty message", ""],
+    ["a blank message", "   "],
+    ["a 501-character message", "가".repeat(501)],
+  ])("rejects %s and leaves the entry unchanged", async (_label, message) => {
+    const guestbook = newGuestbook();
+    const entry = await createOk(guestbook, validInput());
+
+    const result = await guestbook.editEntry({
+      id: entry.id,
+      message,
+      password: "1234",
+    });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.reason).toBe("invalid");
+    const [listed] = await guestbook.listEntries();
+    expect(listed).toMatchObject({ message: entry.message, edited: false });
+  });
+
+  it("trims the edited message", async () => {
+    const guestbook = newGuestbook();
+    const entry = await createOk(guestbook, validInput());
+
+    await guestbook.editEntry({
+      id: entry.id,
+      message: "  고친 글 \n",
+      password: "1234",
+    });
+
+    const [listed] = await guestbook.listEntries();
+    expect(listed.message).toBe("고친 글");
+  });
+});
+
+async function createOk(guestbook: Guestbook, input: NewEntryInput) {
+  const result = await guestbook.createEntry(input);
+  if (!result.ok) throw new Error("expected createEntry to succeed");
+  return result.entry;
+}
 
 function validInput(overrides: Partial<NewEntryInput> = {}): NewEntryInput {
   return {

@@ -5,7 +5,7 @@ import {
   checkPassword,
   type FieldErrors,
 } from "./entry-rules";
-import { hashPassword } from "./password";
+import { hashPassword, verifyPassword } from "./password";
 
 // What anyone may see of an entry. The password never leaves the module.
 export type Entry = {
@@ -26,7 +26,18 @@ export type CreateEntryResult =
   | { ok: true; entry: Entry }
   | { ok: false; reason: "invalid"; errors: FieldErrors };
 
-export type Guestbook = ReturnType<typeof createGuestbook>;
+export type EditEntryInput = {
+  id: string;
+  message: string;
+  password: string;
+};
+
+export type EditEntryResult =
+  | { ok: true; entry: Entry }
+  | { ok: false; reason: "wrong-password" | "not-found" }
+  | { ok: false; reason: "invalid"; errors: FieldErrors };
+
+export type Guestbook =ReturnType<typeof createGuestbook>;
 
 export function createGuestbook(store: EntryStore) {
   return {
@@ -56,6 +67,23 @@ export function createGuestbook(store: EntryStore) {
         passwordHash: await hashPassword(password.value),
       });
       return { ok: true, entry: toEntry(stored) };
+    },
+
+    async editEntry(input: EditEntryInput): Promise<EditEntryResult> {
+      const message = checkMessage(input.message);
+      if ("error" in message) {
+        return { ok: false, reason: "invalid", errors: { message: message.error } };
+      }
+
+      const existing = await store.findById(input.id);
+      if (!existing) return { ok: false, reason: "not-found" };
+      if (!(await verifyPassword(input.password, existing.passwordHash))) {
+        return { ok: false, reason: "wrong-password" };
+      }
+
+      const updated = await store.updateMessage(input.id, message.value);
+      if (!updated) return { ok: false, reason: "not-found" };
+      return { ok: true, entry: toEntry(updated) };
     },
   };
 }

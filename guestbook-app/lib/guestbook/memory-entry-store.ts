@@ -26,5 +26,18 @@ export function createMemoryEntryStore(): EntryStore {
       entries.push(stored);
       return { ...stored };
     },
+
+    async findById(id) {
+      const entry = entries.find((e) => e.id === id);
+      return entry ? { ...entry } : null;
+    },
+
+    async updateMessage(id, message) {
+      const entry = entries.find((e) => e.id === id);
+      if (!entry) return null;
+      entry.message = message;
+      entry.updatedAt = new Date();
+      return { ...entry };
+    },
   };
 }

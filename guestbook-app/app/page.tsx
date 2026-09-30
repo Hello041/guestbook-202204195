@@ -1,7 +1,7 @@
 import { connection } from "next/server";
-import { formatCreatedTime } from "@/lib/format-created-time";
 import { guestbook } from "@/lib/guestbook/server";
 import { CreateEntryForm } from "./create-entry-form";
+import { EntryItem } from "./entry-item";
 
 export default async function Home() {
   // The list changes with every entry, so render it per request.
@@ -27,24 +27,7 @@ export default async function Home() {
         ) : (
           <ul className="flex flex-col gap-3">
             {entries.map((entry) => (
-              <li
-                key={entry.id}
-                className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900/60"
-              >
-                <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                  <span className="font-semibold">{entry.authorName}</span>
-                  <time
-                    dateTime={entry.createdAt.toISOString()}
-                    className="text-xs text-slate-500 dark:text-slate-400"
-                  >
-                    {formatCreatedTime(entry.createdAt)}
-                    {entry.edited && " (수정됨)"}
-                  </time>
-                </div>
-                <p className="mt-2 whitespace-pre-wrap break-words">
-                  {entry.message}
-                </p>
-              </li>
+              <EntryItem key={entry.id} entry={entry} />
             ))}
           </ul>
         )}
